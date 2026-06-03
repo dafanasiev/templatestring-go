@@ -17,14 +17,14 @@ type segment struct {
 	t tokenType
 	v string
 }
-type templateString struct {
+type TemplateString struct {
 	segments []segment
 }
 
 var parser = regexp.MustCompile(`\$[(\{]\s*(\S+?)\s*[)\}]`)
 
-func NewTemplateString(template string) *templateString {
-	rv := templateString{}
+func NewTemplateString(template string) *TemplateString {
+	rv := TemplateString{}
 
 	if len(template) == 0 {
 		return &rv
@@ -65,7 +65,7 @@ func NewTemplateString(template string) *templateString {
 	return &rv
 }
 
-func (t *templateString) Render(plugins ...Plugin) (string, error) {
+func (t *TemplateString) Render(plugins ...Plugin) (string, error) {
 	if len(t.segments) == 0 {
 		return "", nil
 	}
