@@ -76,6 +76,8 @@ func (t *TemplateString) Render(plugins ...Plugin) (string, error) {
 
 	rvlen := 0
 	rv := make([]string, 0, len(t.segments))
+
+_seg:
 	for _, s := range t.segments {
 		if s.t == literal {
 			rv = append(rv, s.v)
@@ -84,23 +86,20 @@ func (t *TemplateString) Render(plugins ...Plugin) (string, error) {
 			var err error
 			rvi := s.v
 			isProcessed := false
-			nProcessed := 0
 			for _, plugin := range plugins {
 				rvi, isProcessed, err = plugin.ProcessToken(rvi)
 				if err != nil {
 					return "", err
 				}
 				if isProcessed {
-					nProcessed++
+					rv = append(rv, rvi)
+					rvlen += len(rvi)
+					continue _seg
 				}
 			}
 
-			if nProcessed == 0 {
-				return "", fmt.Errorf("no plugins to process token [%s] specified", s.v)
-			}
+			return "", fmt.Errorf("no plugins to process token [%s] specified", s.v)
 
-			rv = append(rv, rvi)
-			rvlen += len(rvi)
 		} else {
 			// coverage-ignore
 			panic("never")
