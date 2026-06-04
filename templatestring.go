@@ -18,13 +18,16 @@ type segment struct {
 	v string
 }
 type TemplateString struct {
+	origin   string
 	segments []segment
 }
 
 var parser = regexp.MustCompile(`\$[(\{]\s*(\S+?)\s*[)\}]`)
 
 func NewTemplateString(template string) *TemplateString {
-	rv := TemplateString{}
+	rv := TemplateString{
+		origin: template,
+	}
 
 	if len(template) == 0 {
 		return &rv
@@ -111,4 +114,8 @@ _seg:
 		b = append(b, rvi...)
 	}
 	return string(b), nil
+}
+
+func (t *TemplateString) String() string {
+	return t.origin
 }

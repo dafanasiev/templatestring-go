@@ -118,3 +118,18 @@ func Test_EnvPlugin3(t *testing.T) {
 		t.Fatal("should produce error")
 	}
 }
+
+func Test_StringMethod(t *testing.T) {
+	expected := ".... ${env:HOME} ...."
+	ts := NewTemplateString(expected)
+
+	_, err := ts.Render(NewEnvPlugin())
+	actual := ts.String()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	if actual != expected {
+		t.Fatalf("expected: %s, actual: %s", expected, actual)
+	}
+}
